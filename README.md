@@ -30,6 +30,8 @@ ex: python3 main.py --data input/input_data --model input/input_model/resnet50.d
   ### find the result
 In the xrbench-snapdragon, new folder is created. name of the folder is same as name of model name.
 go to the created folder -> output -> model name -> results -> most recent one
+  ### open the result
+Open the csv file.
 
 ## Things to be careful about
   ### Different device
