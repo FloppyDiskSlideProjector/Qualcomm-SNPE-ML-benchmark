@@ -5,8 +5,8 @@
 
 ## Setup
   ### qualcomm's ML model. 
-    * Deep Learning Container (DLC).
-    use this link for rederence https://developer.qualcomm.com/sites/default/files/docs/snpe/overview.html
+    #### Deep Learning Container (DLC).
+    # use this link for rederence https://developer.qualcomm.com/sites/default/files/docs/snpe/overview.html
 
   ### raw data for ML model.
     Use the information in this link https://developer.qualcomm.com/sites/default/files/docs/snpe/image_input.html
