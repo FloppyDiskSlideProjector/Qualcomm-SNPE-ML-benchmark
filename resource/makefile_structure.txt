@@ -1,0 +1,72 @@
+MODEL_PATH = ~/xrbench-snapdragon/$(MODEL_NAME)
+
+
+DEVICE_PATH = /data/local/tmp/snpe/$(SNPE_VERSION)
+
+export SNPE_TARGET_ARCH := aarch64-android
+export SNPE_TARGET_STL := libc++_shared.so
+export SNPE_TARGET_DSPARCH := hexagon-v69
+export SNPE_ROOT := /opt/qcom/aistack/snpe/$(SNPE_VERSION)
+
+export PYTHONPATH := $(SNPE_ROOT)/lib/python
+
+
+
+# prepare device
+
+_copy_runtime_and_lib:
+	adb shell "mkdir -p $(DEVICE_PATH)/bin"
+	adb shell "mkdir -p $(DEVICE_PATH)/lib"
+	adb shell "mkdir -p $(DEVICE_PATH)/dsp/lib"
+	adb push $(SNPE_ROOT)/lib/$(SNPE_TARGET_ARCH)/$(SNPE_TARGET_STL) $(DEVICE_PATH)/lib
+	adb push $(SNPE_ROOT)/lib/$(SNPE_TARGET_ARCH)/*.so $(DEVICE_PATH)/lib
+	adb push $(SNPE_ROOT)/lib/$(SNPE_TARGET_DSPARCH)/unsigned/*.so $(DEVICE_PATH)/dsp/lib
+	adb push $(SNPE_ROOT)/bin/$(SNPE_TARGET_ARCH)/snpe-net-run $(DEVICE_PATH)/bin
+	adb push $(SNPE_ROOT)/bin/$(SNPE_TARGET_ARCH)/snpe-platform-validator $(DEVICE_PATH)/bin
+	adb shell "chmod 777 $(DEVICE_PATH)/bin/snpe-net-run"
+	adb shell "chmod 777 $(DEVICE_PATH)/bin/snpe-platform-validator"
+
+_copy_model:
+	adb shell "mkdir -p $(DEVICE_PATH)/$(MODEL_NAME)"
+	adb push $(MODEL_PATH)/data/cropped $(DEVICE_PATH)/$(MODEL_NAME)/cropped
+	adb push $(MODEL_PATH)/data/target_raw_list.txt $(DEVICE_PATH)/$(MODEL_NAME)
+	adb push $(MODEL_PATH)/model/$(MODEL_DLC) $(DEVICE_PATH)/$(MODEL_NAME)
+
+prepare_device: _copy_runtime_and_lib _copy_model
+
+clean_device:
+	adb shell "rm -rf $(DEVICE_PATH)"
+	
+	
+	
+# validate device
+
+
+SETUP_PATH := LD_LIBRARY_PATH=$(DEVICE_PATH)/lib ADSP_LIBRARY_PATH=$(DEVICE_PATH)/dsp/lib
+
+validate_device:
+	adb shell "$(SETUP_PATH) $(DEVICE_PATH)/bin/snpe-platform-validator --runtime gpu --testRuntime --coreVersion --libVersion --debug"
+	adb shell "$(SETUP_PATH) $(DEVICE_PATH)/bin/snpe-platform-validator --runtime dsp --testRuntime --coreVersion --libVersion --debug"
+	adb shell "$(SETUP_PATH) $(DEVICE_PATH)/bin/snpe-platform-validator --runtime aip --testRuntime --coreVersion --libVersion --debug"
+	
+	
+# run model on device
+
+run_model_on_device_cpu:
+	adb shell "cd $(DEVICE_PATH)/$(MODEL_NAME) \
+		&& $(SETUP_PATH) $(DEVICE_PATH)/bin/snpe-net-run --container $(MODEL_DLC) --input_list target_raw_list.txt" --perf_profile=default
+
+run_model_on_device_gpu:
+	adb shell "cd $(DEVICE_PATH)/$(MODEL_NAME) \
+		&& $(SETUP_PATH) $(DEVICE_PATH)/bin/snpe-net-run --container $(MODEL_DLC) --input_list target_raw_list.txt --use_gpu"
+
+run_model_on_device_dsp:
+	adb shell "cd $(DEVICE_PATH)/$(MODEL_NAME) \
+		&& $(SETUP_PATH) $(DEVICE_PATH)/bin/snpe-net-run --container $(MODEL_DLC) --input_list target_raw_list.txt --use_dsp"
+
+run_model_on_device_aip:
+	adb shell "cd $(DEVICE_PATH)/$(MODEL_NAME) \
+		&& $(SETUP_PATH) $(DEVICE_PATH)/bin/snpe-net-run --container $(MODEL_DLC) --input_list target_raw_list.txt --use_aip"
+
+benchmark_model_on_device:
+	python3 $(SNPE_ROOT)/benchmarks/SNPE/snpe_bench.py -c benchmark.json -a -o output
