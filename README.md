@@ -22,22 +22,22 @@ go to the xrbench-snapdragon and run the command
   ###
     python3 main.py --data input/input_data --model input/input_model/{model_name}
   ###
-    makesure you replace the name of model into model_name
+makesure you replace the name of model into model_name
   ###
 ex: python3 main.py --data input/input_data --model input/input_model/resnet50.dlc
 
 ## see the result
   ### find the result
-    In the xrbench-snapdragon, new folder is created. name of the folder is same as name of model name.
-    go to the created folder -> output -> model name -> results -> most recent one
+In the xrbench-snapdragon, new folder is created. name of the folder is same as name of model name.
+go to the created folder -> output -> model name -> results -> most recent one
 
 ## Things to be careful about
   ### Different device
-  this is made for galaxy S22 and galaxy S22's qualcomm chip. To make it run on the other machine, you may make some changes on the utils or src.
+this is made for galaxy S22 and galaxy S22's qualcomm chip. To make it run on the other machine, you may make some changes on the utils or src.
 
   ### Different SNPE version
-  this is made for SNPE with version 2.16.0.231029. To make it run on the other version, you may make some changes on makefile_maker.py on utils.
+this is made for SNPE with version 2.16.0.231029. To make it run on the other version, you may make some changes on makefile_maker.py on utils.
 
 ## demo video
-  https://drive.google.com/file/d/1D5aRv_VQdiTpXsGEMCoGxKxBpaccG6X-/view?usp=sharing
+https://drive.google.com/file/d/1D5aRv_VQdiTpXsGEMCoGxKxBpaccG6X-/view?usp=sharing
   
