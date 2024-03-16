@@ -35,5 +35,6 @@
   ### Different SNPE version
   this is made for SNPE with version 2.16.0.231029. To make it run on the other version, you may make some changes on makefile_maker.py on utils.
 
-
+## demo video
+  https://drive.google.com/file/d/1D5aRv_VQdiTpXsGEMCoGxKxBpaccG6X-/view?usp=sharing
   
