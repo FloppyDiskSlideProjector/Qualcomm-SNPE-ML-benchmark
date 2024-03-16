@@ -15,7 +15,6 @@ to make raw image
 ## benchmark the model
   ### prepare the file and data
     move ML model into the xrbench-snapdragon/input/input_model
-
   ###
     move all data into the xrbench-snapdragon/input/input_data
 
