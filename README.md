@@ -14,18 +14,17 @@ to make raw image
 
 ## benchmark the model
   ### prepare the file and data
-    move ML model into the xrbench-snapdragon/input/input_model
-  ###
-    move all data into the xrbench-snapdragon/input/input_data
+move ML model into the xrbench-snapdragon/input/input_model
+move all data into the xrbench-snapdragon/input/input_data
 
   ### run the model
-    go to the xrbench-snapdragon and run the command 
+go to the xrbench-snapdragon and run the command 
   ###
     python3 main.py --data input/input_data --model input/input_model/{model_name}
   ###
     makesure you replace the name of model into model_name
   ###
-    ex: python3 main.py --data input/input_data --model input/input_model/resnet50.dlc
+ex: python3 main.py --data input/input_data --model input/input_model/resnet50.dlc
 
 ## see the result
   ### find the result
